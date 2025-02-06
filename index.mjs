@@ -1,3 +1,8 @@
+/* const {userData,podcasts,products,item,mediaData,podcast2,postData,podcast3} = require('./data.js'); */
+import data from './data.mjs';
+const { userData, podcasts, products, item, mediaData, podcast2, postData, podcast3 } = data;
+
+
 /******************************************************************************
 Welcome to GDB Online.
 GDB online is an online compiler and debugger tool for C, C++, Python, Java, PHP, Ruby, Perl,
@@ -701,3 +706,522 @@ function findTheWinner(obj){
 }
 
 console.log(findTheWinner(gameNightFood));
+
+
+/******************************************************************************
+*****************************************************************************/
+
+
+/* Totally Private Data Farm 
+
+Good news, renown advertising firm Evil Corp. wants to purchase our 
+private user data! 
+
+We'd never do this in real life of course, but just for practice 
+let's pretend we're unethical web hackers and transform the data 
+in the way Evil Corp. has requested. They're quite particular and
+just want an array of users with a fullname and human readable
+birthday.   
+
+Write a function that maps through the current data and returns
+a new an array of objects with only two properties: 
+fullName and birthday. Each result in your 
+array should look like this when you're done: 
+
+{
+    fullName: "Levent Busser", 
+    birthday: "Fri Aug 20 1971"
+}
+
+Read about toDateString() for info on formatting a readable date. 
+
+*/
+
+
+function transformData(data){
+      return data.map(user =>{
+       const fullName = `${user.name.first} ${user.name.last}`;
+       const date = new Date(user.dob.data).toDateString();
+       return {fullName, date};
+      })
+}
+
+console.log(transformData(userData));
+
+
+/******************************************************************************
+*****************************************************************************/
+/* Find Free Podcasts 
+
+We have a list of podcasts and need the ability to filter by only
+podcasts which are free.
+
+Write a function that takes in the podcast data and returns an new
+array of only those podcasts which are free.
+
+Additionally, your new array should return only 
+objects containing only the podcast title, rating, and whether or 
+not it is paid. 
+
+Expected output: 
+[
+    {title: "Scrimba Podcast", rating: 10, paid: false}, 
+    {title: "Something about Witches", rating: 8, paid: false}, 
+    {title: "Coding Corner", rating: 9, paid: false}
+]
+*/
+
+function getFreePodcasts(data){
+    // filter list by paid prop
+    // use map to create a new array of objects with only the specified properties 
+    return data
+        .filter(item => item.paid === false)
+        .map(podcast => {
+            return {
+                title: podcast.title,
+                rating: podcast.rating,
+                paid: podcast.paid
+            }
+        });
+}
+
+console.log(getFreePodcasts(podcasts))
+
+
+/******************************************************************************
+*****************************************************************************/
+
+
+/*
+   It's the day after Halloween 🎃 and all the candy is on sale!
+   
+   To buy up all the candy, use map() and filter() to put all the
+   candy into a `shoppingCart` array. 
+   
+   The new array should contain only the item and the price, like
+   this: 
+   
+   Expected output: 
+   [
+       {item: "🍭", price: 2.99},
+       {item: "🍫", price: 1.99}, 
+       {item: "🍬", price: 0.89}
+    ]
+*/
+
+function getSaleItems(data){
+    // filter the data by product.type -- only sweet
+    return (
+    data.filter(product => product.type === "sweet")
+    // loop through the data using map 
+    .map(({item, price}) => {
+        // for every candy, return a new object with only item and price
+        return {
+            item,
+            price
+        }
+    }));
+};
+
+const shoppingCart = getSaleItems(products);
+console.log(shoppingCart);
+
+
+/******************************************************************************
+*****************************************************************************/
+
+/*  
+Use reduce() to total the groceries. 
+Then find a method that will round the total to 2 decimal places.
+
+Example output: 73.44
+*/
+
+function total(arr){
+    const total = arr.reduce((acc, curr) => {
+        console.log(curr);
+        return acc + curr.price;
+    }, 0);
+    
+   return total.toFixed(2);
+}
+
+console.log(total(products));
+
+
+
+/******************************************************************************
+*****************************************************************************/
+
+/*
+Use reduce() and only reduce() to calculate and return 
+the total cost of only the savory
+items in the shopping cart.
+
+Expected output: 9.97  
+*/
+
+function totalSavory(arr){
+       return arr.reduce((acc,curr)=>
+            curr.type === "savory" ? acc + curr.price : acc
+       ,0).toFixed(2);
+       
+}
+
+console.log(totalSavory(products));
+
+
+/******************************************************************************
+*******************************************************************************/
+/*
+    You're online shopping for holiday gifts, but money is tight
+    so we need to look at the cheapest items first. 
+    Use the built in sort() method to write a function that returns a new array of
+    products sorted by price, cheapest to most expensive. 
+    
+    Then log the item and the price to the console: 
+    
+    💕,0
+    🍬,0.89
+    🍫,0.99
+    🧁,0.99
+    📚,0.99
+    ... continued
+*/
+
+function sortProducts(data){
+    return data.sort((a,b)=>{
+        return a.price - b.price;
+    })
+}
+
+const listByCheapest = sortProducts(item);
+//console.log(listByCheapest);
+
+listByCheapest.forEach(items => console.log(items.product,items.price))
+
+
+/******************************************************************************
+*******************************************************************************/
+for( var i =0 ;i<5; i++){
+    setTimeout(()=>console.log(i),1000)
+}
+
+
+/******************************************************************************
+*******************************************************************************/
+
+
+/* Find All Unique Tags 
+
+As a software dev at ScrimFlix, you're working on a feature 
+to let users browse TV shows by tag. The first step is to collect all 
+the tags from our data into a new array. Then we'll need 
+to filter out the duplicate tags. 
+
+Write a function that takes in the media data and returns
+a flat array of unique tags.
+
+Expected output: 
+["supernatural", "horror", "drama",
+"fantasy", "reality", "home improvement", "comedy", "sci-fi", "adventure"]
+
+*/ 
+
+function getUniqueTags(data){
+    const allTag = data.map(item => item.tags).flat();
+    const uniqueTags = [...new Set(allTag)];
+    return uniqueTags;
+}
+
+console.log(getUniqueTags(mediaData));
+
+
+/* 2nd method
+ // create a new array uniqueTags to hold the unique values
+    const uniqueTags = [];
+    // loop through the tags array
+
+    allTag.forEach(tag => {
+         // is the element already in the uniqueTags arr? 
+         if(!uniqueTags.includes(tag)){
+             uniqueTags.push(tag)
+         }
+    })
+       
+*/
+
+
+
+/******************************************************************************
+*******************************************************************************/
+
+
+/* Welcome Aboard Scrimba Airlines 
+
+Our Scrimba Airlines in-flight entertainment package 
+includes a variety of podcasts. We need to add a feature that suggests
+podcasts to our patrons based on whether a flight is short or long. 
+
+Your sort function should take two arguments: the podcast data and
+flight length. If the flight is 60 minutes or less, sort the podcast list 
+from shortest to longest. If it's anything else, sort from longest
+to shortest. 
+
+Your function shouldn't return anything. Instead log a numbered list 
+of the title and duration of 
+each podcast to the console, like this:
+
+1. Crime Fan, 150 minutes
+2. Mythical Creatures, 99 minutes
+3. Crime Crime Crime, 70 minutes
+4. Coding Corner, 55 minutes
+5. Scrimba Podcast, 50 minutes
+6. Something about Witches, 35 minutes
+
+a - b will sort an array in descending
+b - a will sort in ascending order
+
+*/
+
+function sortByDuration(data, flightLength){
+
+      // Check if flight is greater than 60 minutes
+      if(flightLength > 60){
+          // if yes, sort decending order (longest to shortest)
+          data.sort((a,b) => b.duration - a.duration);
+      } else {
+          data.sort((a,b) => a.duration - b.duration);
+      }
+     // loop through my sorted array
+     data.forEach(({title, duration}, index) => {
+         // construct a string using the title and duration props 
+        // use the index to number the list
+        // console.log each item
+         console.log(`${index + 1}. ${title}, ${duration} minutes`);
+     });
+
+
+}
+
+sortByDuration(podcast2, 60);
+
+
+/******************************************************************************
+*******************************************************************************/
+
+
+/* Popularity Contest 
+
+Iggy the Influencer and Toby the Tiktoker are dying to know
+who's more popular on social media. 
+
+Toby's TikToks get an average of 400 likes. On average, how many
+likes do Iggy's Instagram posts get? 
+
+In data.js you'll find a list of Iggy's recent posts. 
+Use reduce() to write a function that returns the average number of likes.
+To find the average, add up the total number of likes, then divide
+by the total number of posts.
+*/
+
+function calcAverageLikes(data){
+  const totalLikes = data.reduce((sum,post)=> sum += post.likes,0);
+  const avgLikes = totalLikes / data.length;
+  return avgLikes;
+} 
+
+
+console.log(calcAverageLikes(postData))
+
+
+
+/******************************************************************************
+*******************************************************************************/
+/* Night at the Scrimbies 
+
+It's time for the Scrimbies, a prestigious award show for podcast hosts.
+We need to assemble a list of podcast hosts so we can start handing out awards. 
+
+Write a function that takes in the podcast data and
+returns a flat array of podcast hosts. There are quite a few ways to approach
+this, but try solving the problem using reduce(). 
+
+Once you have a flat array of hosts, write a second function to randomly assign each host a prize
+from the awards array. 
+
+Example output: ["🏆 Alex Booker", "⭐ Bob Smith", "💎 Camilla Lambert" ...] 
+
+*/ 
+const awards = ["🏆", "⭐", "💎", "🥇", "👑"];
+
+function getHosts(data){
+   // reduce the podcasts data down to a list of hosts
+   return data.reduce((acc, curr)=>{
+       // add curr.hosts to the acc array
+       return acc.concat(curr.hosts);
+   }, [])
+}
+
+function assignAwards(data){
+    // use getHosts() to get a flat array of podcasts hosts
+    const hosts = getHosts(data);
+    // map through my array of hosts. for each:
+    return hosts.map(host => {
+         // use Math.random to generate a rand num between 0 and length of award arr
+         const randIndex = Math.floor(Math.random() * awards.length); 
+        // use the rand num to access a random award index
+        // use string literal to concast a random award to each host 
+        return `${awards[randIndex]} ${host}`;
+    });   
+}
+
+
+//console.log(getHosts(podcasts));
+console.log(assignAwards(podcast3));
+
+
+/******************************************************************************
+*******************************************************************************/
+/* 🌴 Save the Weekend 🌴
+
+Your best friend is a copywriter who writes product descriptions 
+for a living. You want to use your hacking skills to help them 
+automate their job so you both can spend the weekend on a 
+tropical island. 
+
+Use array methods and the existing podcast data to write a function that
+can generate a description for each podcast. 
+
+Add the description as a new property on each podcast object, and return
+a new podcast array where each podcast has a description. 
+
+Each description should look like this: 
+[
+    {
+        id: 1,
+        title: "Scrimba Podcast", 
+        ...
+        description: "Scrimba Podcast is a 50 minute education podcast hosted 
+        by Alex Booker."
+    }
+    ...
+]
+
+If the podcast has more than one host, you can display only the first host.
+
+Stretch goal: Display all three hosts in the description, seperated with commas: 
+
+Example description: "Coding Corner is a 55 minute education podcast hosted by Treasure Porth, Guil Hernandez, and Tom Chant."
+*/ 
+
+function createDescriptionsFor(data){
+    // map through the data
+    return data.map(podcast => {
+        const {title, duration, genre, hosts} = podcast;
+        // use title, duration, genre and host data to make description
+        // for each podcast object, add description prop
+        return {
+            ...podcast,
+            description: `${title} is a ${duration} minute ${genre} podcast hosted 
+            by ${hosts[0]}.`
+        };
+    })
+        
+        
+}
+
+console.log(createDescriptionsFor(podcast3))
+
+
+/******************************************************************************
+*******************************************************************************/
+/* Find anagrams in an array   
+
+When two words have the exact same letters, they are anagrams. 
+
+Each item in the anagrams array is an anagram of a Scrimba teacher's
+first and last name, plus the phrase "Scrimba teacher". 
+
+Write a function to determine which strings in the array are 
+anagrams of "Bob Ziroll Scrimba Teacher".
+
+Your function should take two parameters: the phrase you want to compare to
+the anagrams, and an array of anagrams. The function should return
+a new array of anagrams that match the phrase. 
+
+Example input: treat, ["tater", "tree", "teart", "tetra", "heart", "hamster"]
+Example output: ["tater", "teart", "tetra"]
+
+Bonus: What other teachers are represented in these anagrams? 
+ */
+
+const anagrams = [
+    "moz biblical torchbearers",  
+    "it's razorbill beachcomber", 
+    "och mcrobbie trailblazers", 
+    "bib chorizo cellarmaster", 
+    "thor scribble carbimazole", 
+    "zilla borscht abercrombie", 
+    "brazil scorcher batmobile", 
+    "dame shelburne characterizing", 
+    "uber englishman characterized", 
+    "agnes rhumbline characterized", 
+    "rehab scrutinized charlemagne", 
+    "dreams zurich interchangeable", 
+    "bam hamster technocratic", 
+    "mechatronic masterbatch", 
+    "bam ratchet mechatronics"
+]
+
+function sortPhrase(phrase){
+     return  phrase.toLowerCase().split('').sort().join("").trim();
+}
+
+function isAnagramInArray(anagram, arr){
+            return arr.filter(item =>{
+                const word1 =sortPhrase(anagram);
+                const word2 = sortPhrase(item)
+                return word1 === word2;
+            })
+             
+}
+
+console.log(isAnagramInArray("Bob Ziroll Scrimba Teacher", anagrams));
+
+
+
+
+/******************************************************************************
+*******************************************************************************/
+/*
+   Oh no, our emoji flower bed is infested with mammals, trees and leaves!
+   Without changing the API url, write a function to transform your 
+   data before it's displayed. The function should eliminate
+   everything but bugs and flowers. Use your function in the API call.  
+   
+   Hint: Be sure to console the data to see what properties can help you do this!
+*/ 
+
+const api = 'https://apis.scrimba.com/emojihub/api/all/category/animals-and-nature';
+//const flowerBed = document.querySelector('.emoji-flower-bed');
+const flowerBed = document.querySelector('.emoji-flower-bed');
+
+function clearTheGarden(arr){
+    // filter by group property - "animal bug" && "plant flower"
+    return arr.filter(emoji => emoji.group === "animal bug" || emoji.group === "plant flower");
+}
+
+
+fetch(api) 
+    .then(response => response.json())
+    .then(result => clearTheGarden(result))
+    .then((data) => {
+        data.forEach(emoji => {
+            flowerBed.innerHTML += `<li>${emoji.htmlCode}</li>`;
+        });    
+    })
+    .catch(err => console.log(err));
+
+
+    
